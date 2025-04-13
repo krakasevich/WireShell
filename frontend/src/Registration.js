@@ -44,18 +44,31 @@ function RegisterPage() {
             });
 
             const data = await response.json();
+            console.log('Registration response:', data);
 
             if (response.ok) {
+                if (!data.user_id || !data.username) {
+                    throw new Error('Invalid server response: missing user data');
+                }
+
+                const userData = {
+                    id: data.user_id,
+                    username: data.username
+                };
+                console.log('Saving user data:', userData);
+                
+                localStorage.setItem("user", JSON.stringify(userData));
+                
                 setMessage("Registration successful!");
                 setTimeout(() => {
-                    navigate("/login");
+                    navigate("/vpn");
                 }, 2000);
             } else {
                 setMessage(data.detail || "Registration failed");
             }
         } catch (error) {
-            setMessage("Error connecting to server");
-            console.error('Error:', error);
+            console.error('Registration error:', error);
+            setMessage(error.message || "Error connecting to server");
         }
     };
   

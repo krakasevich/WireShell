@@ -20,18 +20,24 @@ function VPN() {
 
     useEffect(() => {
         const storedData = localStorage.getItem('user');
+        console.log('Stored data in localStorage:', storedData);
+
         if (storedData) {
             const parsedData = JSON.parse(storedData);
+            console.log('Parsed user data:', parsedData);
+
             setUserData({
                 user_id: parsedData.id,
                 username: parsedData.username
             });
+        } else {
+            console.log('No user data found in localStorage');
         }
     }, []);
 
     const handleLogout = () => {
         localStorage.removeItem('user');
-        navigate('/login');
+        navigate('/');
     };
 
     const handleDownloadConfig = async () => {

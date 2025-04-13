@@ -51,25 +51,33 @@ def get_db():
 # The endpoint for registration
 @app.post("/register")
 def register_user(user: UserCreate, db: Session = Depends(get_db)):
-    # Checking if the user exists
-    db_user = db.query(User).filter(User.username == user.username).first()
-    if db_user:
-        raise HTTPException(status_code=400, detail="The user already exists")
+    try:
+        # Checking if the user exists
+        db_user = db.query(User).filter(User.username == user.username).first()
+        if db_user:
+            raise HTTPException(status_code=400, detail="The user already exists")
 
-    # Hashing the password
-    hashed_password = hashlib.sha256(user.password.encode()).hexdigest()
-    
-    # Creating a new user
-    db_user = User(
-        username=user.username,
-        password=hashed_password
-    )
-    
-    db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
-    
-    return {"message": "The user has been successfully registered"}
+        # Hashing the password
+        hashed_password = hashlib.sha256(user.password.encode()).hexdigest()
+        
+        # Creating a new user
+        db_user = User(
+            username=user.username,
+            password=hashed_password
+        )
+        
+        db.add(db_user)
+        db.commit()
+        db.refresh(db_user)
+        
+        return {
+            "message": "The user has been successfully registered",
+            "user_id": db_user.id,
+            "username": db_user.username
+        }
+    except Exception as e:
+        print(f"Registration error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Registration error: {str(e)}")
 
 # The entry endpoint
 @app.post("/login")

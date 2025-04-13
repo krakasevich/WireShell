@@ -30,10 +30,17 @@ function Login() {
             }
 
             const data = await response.json();
-            localStorage.setItem("user", JSON.stringify({
+            console.log('Login response data:', data);
+            
+            const userData = {
                 id: data.user_id,
                 username: data.username
-            }));
+            };
+            console.log('Saving user data:', userData);
+            
+            localStorage.setItem("user", JSON.stringify(userData));
+            console.log('Stored in localStorage:', localStorage.getItem("user"));
+            
             navigate("/vpn");
         } catch (error) {
             console.error("Login error:", error);
