@@ -1,0 +1,102 @@
+.home_page {
+    margin-right: auto;
+    margin-left: auto;
+    width: 1200px;   
+}
+
+.home_info {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    margin-top: 130px;
+    color: white;
+}
+
+.main_headline {
+    font-size: 40px;
+    color: #b8b7b7;
+}
+
+.headline {
+    font-size: 18px;
+    color: #ebe9e9;
+}
+
+.btns_authentication {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.btn_login {
+    width: 200px;
+    background-color: #4cd0a1;
+    border-radius: 15px;
+    padding: 15px;
+    margin-top: 30px;
+    border: none;
+    font-size: 16px;
+    font-family: "Inter", sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn_get_started {
+    width: 200px;
+    background-color: #4cd0a1;
+    border-radius: 15px;
+    padding: 15px;
+    margin-top: 30px;
+    border: none;
+    font-size: 16px;
+    font-family: "Inter", sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn_get_started:hover {
+    background-color: #3fb589;
+    transform: translateY(-2px);
+}
+
+.btn_login:hover {
+    background-color: #3fb589;
+    transform: translateY(-2px);
+}
+
+.choose_secureNet_section h2 {
+    margin-top: 70px;
+    text-align: center;
+    color: #b8b7b7;
+}
+
+.inf_benefits {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    gap: 30px;
+}
+
+.point {
+    width: 100%;
+    padding: 15px;
+    border-radius: 15px; 
+    border: 1px solid #4cd0a1;
+    background-color: rgba(45, 43, 43, 0.95); 
+    color: #ebe9e9;
+    text-align: center;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.point p {
+    color: rgb(177, 175, 175);
+}
+
+.point:hover {
+    background-color: rgba(53, 52, 52, 0.95);
+    transform: translateY(-2px);
+}

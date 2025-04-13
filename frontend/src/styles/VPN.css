@@ -1,0 +1,415 @@
+.vpn-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.header h1 {
+    margin: 0;
+    color: #333;
+}
+
+.logout-button {
+    background-color: #ff6b6b;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.logout-button:hover {
+    background-color: #ff5252;
+}
+
+.content {
+    background-color: white;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.location-selector {
+    margin-bottom: 30px;
+}
+
+.location-selector h2 {
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.location-selector select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: white;
+}
+
+.download-section {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.download-button {
+    background-color: #4CD0A1;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.download-button:hover {
+    background-color: #3fb589;
+}
+
+.download-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.error {
+    color: #ff6b6b;
+    margin-top: 10px;
+}
+
+.instructions {
+    border-top: 1px solid #eee;
+    padding-top: 30px;
+}
+
+.instructions h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.instructions ol {
+    padding-left: 20px;
+}
+
+.instructions li {
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+.instructions a {
+    color: #4CD0A1;
+    text-decoration: none;
+}
+
+.instructions a:hover {
+    text-decoration: underline;
+}
+
+.vpn_page{
+    margin: 0 auto 0 auto;
+    width: 1200px;
+    padding: 2rem;
+}
+
+.vpn_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background-color: rgba(45, 43, 43, 0.95);
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.vpn_header h1 {
+    color: #b8b7b7;
+    margin: 0;
+}
+
+.logout_button {
+    padding: 0.5rem 1rem;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.logout_button:hover {
+    background-color: #c82333;
+    transform: translateY(-2px);
+}
+
+.vpn_content {
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: rgba(45, 43, 43, 0.95);
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.vpn_content h2 {
+    color: #b8b7b7;
+    margin-bottom: 2rem;
+}
+
+.vpn_status {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background-color: #4E4E4E;
+    border-radius: 5px;
+}
+
+.vpn_status p {
+    font-size: 1.2rem;
+    color: #ebe9e9;
+    margin-bottom: 1rem;
+}
+
+.location_selector {
+    margin: 1rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.location_selector label {
+    color: #b8b7b7;
+    font-weight: 500;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.location_dropdown {
+    padding: 0.8rem 1.2rem;
+    font-size: 1rem;
+    border: 2px solid #4cd0a1;
+    border-radius: 8px;
+    background-color: #4E4E4E;
+    color: #ebe9e9;
+    cursor: pointer;
+    min-width: 250px;
+    transition: all 0.3s ease;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234cd0a1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1em;
+}
+
+.location_dropdown:focus {
+    outline: none;
+    border-color: #4cd0a1;
+    box-shadow: 0 0 0 3px rgba(76, 208, 161, 0.2);
+}
+
+.location_dropdown:hover {
+    border-color: #3fb589;
+}
+
+.location_dropdown option {
+    padding: 0.8rem;
+    font-size: 1rem;
+    background-color: #4E4E4E;
+    color: #ebe9e9;
+}
+
+.connect_button {
+    width: 200px;
+    background-color: #4cd0a1;
+    border-radius: 15px;
+    padding: 15px;
+    border: none;
+    font-size: 16px;
+    font-family: "Inter", sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.connect_button:hover {
+    background-color: #3fb589;
+    transform: translateY(-2px);
+}
+
+.vpn_info {
+    padding: 1rem;
+    background-color: #4E4E4E;
+    border-radius: 5px;
+}
+
+.vpn_info h3 {
+    color: #b8b7b7;
+    margin-bottom: 1rem;
+}
+
+.vpn_info p {
+    color: #ebe9e9;
+    margin: 0.5rem 0;
+}
+
+.download_section {
+    margin: 1.5rem 0;
+    text-align: center;
+    padding: 1rem;
+    background-color: #4E4E4E;
+    border-radius: 5px;
+}
+
+.download_section p {
+    color: #b8b7b7;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.download_button {
+    background-color: #4cd0a1;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.download_button:hover {
+    background-color: #3fb589;
+    transform: translateY(-2px);
+}
+
+.setup_instructions {
+    margin-top: 2rem;
+    padding: 2rem;
+    background-color: #4E4E4E;
+    border-radius: 10px;
+}
+
+.setup_instructions h3 {
+    color: #b8b7b7;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
+
+.instruction_step {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background-color: rgba(45, 43, 43, 0.95);
+    border-radius: 8px;
+}
+
+.instruction_step:last-child {
+    margin-bottom: 0;
+}
+
+.instruction_step h4 {
+    color: #4cd0a1;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+.instruction_step p {
+    color: #ebe9e9;
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+.instruction_step a {
+    color: #4cd0a1;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.instruction_step a:hover {
+    color: #3fb589;
+    text-decoration: underline;
+}
+
+.instruction_step ul, 
+.instruction_step ol {
+    color: #ebe9e9;
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+}
+
+.instruction_step li {
+    margin-bottom: 0.5rem;
+    line-height: 1.6;
+}
+
+.instruction_step code {
+    background-color: #2d2b2b;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    font-family: monospace;
+}
+
+.instruction_step strong {
+    color: #4cd0a1;
+    font-weight: 600;
+}
+
+.instructions_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding: 0.5rem 0;
+}
+
+.instructions_header:hover h3 {
+    color: #4cd0a1;
+}
+
+.toggle_button {
+    background: none;
+    border: none;
+    color: #4cd0a1;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+}
+
+.toggle_button:hover {
+    transform: scale(1.1);
+}
+
+.instructions_content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease-out;
+}
+
+.instructions_content.open {
+    max-height: 2000px; /* Достаточно большое значение для отображения всего контента */
+    transition: max-height 1s ease-in;
+}
+
+.instruction_step {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.instructions_content.open .instruction_step {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.2s;
+} 
