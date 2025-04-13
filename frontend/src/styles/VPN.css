@@ -144,7 +144,8 @@
 
 .vpn_content h2 {
     color: #b8b7b7;
-    margin-bottom: 2rem;
+    /* margin-bottom: 2rem; */
+    margin: 0 0 1rem 0;
     text-align: center;
 }
 
@@ -181,7 +182,7 @@
     padding: 0.8rem 1.2rem;
     font-size: 1rem;
     border: 2px solid #4cd0a1;
-    border-radius: 8px;
+    border-radius: 16px;
     background-color: #4E4E4E;
     color: #ebe9e9;
     cursor: pointer;
@@ -263,11 +264,12 @@
     background-color: #4cd0a1;
     color: #000000;
     border: none;
-    border-radius: 8px;
+    border-radius: 16px;
     padding: 0.8rem 1.5rem;
     font-size: 1rem;
     cursor: pointer;
     transition: all 0.3s ease;
+    font-family: "Inter", sans-serif;
 }
 
 .download_button:hover {
@@ -277,7 +279,7 @@
 
 .setup_instructions {
     margin-top: 2rem;
-    padding: 2rem;
+    padding: 0 1rem 0;
     background-color: #4E4E4E;
     border-radius: 10px;
 }
@@ -358,6 +360,11 @@
     color: #4cd0a1;
 }
 
+.instruction_step:last-child {
+    margin-bottom: 1rem;
+    padding-bottom: 1.5rem; 
+}
+
 .toggle_button {
     background: none;
     border: none;
@@ -396,4 +403,10 @@
     opacity: 1;
     transform: translateY(0);
     transition-delay: 0.2s;
+}
+
+.welcome_message {
+    color: #b8b7b7;
+    font-size: 1.2rem;
+    font-weight: 500;
 } 

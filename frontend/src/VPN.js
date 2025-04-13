@@ -86,6 +86,8 @@ function VPN() {
     return (
         <div className="vpn_page">
             <div className="vpn_header">
+                {/* <div className="welcome_message">Welcome, {userData?.username}!</div> */}
+                <h1>Welcome, {userData?.username}!</h1>
                 <button onClick={handleLogout} className="logout_button">Logout</button>
             </div>
 

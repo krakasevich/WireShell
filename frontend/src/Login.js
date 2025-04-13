@@ -46,9 +46,13 @@ function Login() {
     };
 
     return (
-        <div className="login-container">
-            <h2>Welcome back!</h2>
-            <p>Sign in to your account</p>
+        // <div className="login-container">
+        <div className="auth_block">
+            <div>
+                <h2>Welcome back!</h2>
+                <p>Sign in to your account</p>
+            </div>
+            
             <form onSubmit={handleSubmit}>
                 <input
                     type="text"
@@ -62,15 +66,13 @@ function Login() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
-                <button type="submit">Sign In</button>
+                <button className="btn_submit" type="submit">Sign In</button>
                 {error && <p className="error">{error}</p>}
             </form>
-            <p>
-                Don't have an account?{' '}
-                <span className="register-link" onClick={handleRegister}>
-                    Register
-                </span>
-            </p>
+
+            <div className="auth_switch">
+                <p>Don't have an account?? <button className="register" onClick={handleRegister}>Register</button></p>
+            </div>
         </div>
     );
 }
