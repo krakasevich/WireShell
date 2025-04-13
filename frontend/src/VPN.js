@@ -5,7 +5,9 @@ import './styles/VPN.css';
 const API_URL = "http://51.21.167.201:8000";
 
 const locations = [
-    { value: "sweden", label: "Sweden" }
+    { value: "sweden", label: "Sweden" },
+    { value: "usa", label: "United States" },
+    { value: "germany", label: "Germany" }
 ];
 
 function VPN() {
@@ -13,6 +15,7 @@ function VPN() {
     const [userData, setUserData] = useState(null);
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [isInstructionsOpen, setIsInstructionsOpen] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -81,18 +84,19 @@ function VPN() {
     };
 
     return (
-        <div className="vpn-container">
-            <div className="header">
-                <h1>VPN Dashboard</h1>
-                <button onClick={handleLogout} className="logout-button">Logout</button>
+        <div className="vpn_page">
+            <div className="vpn_header">
+                <button onClick={handleLogout} className="logout_button">Logout</button>
             </div>
 
-            <div className="content">
-                <div className="location-selector">
-                    <h2>Select Location</h2>
+            <div className="vpn_content">
+                <h2>Download the configuration file for WireGuard</h2>
+                <div className='location_selector'>
+                    <label htmlFor="Location">Select Location</label>
                     <select 
                         value={selectedLocation} 
                         onChange={(e) => setSelectedLocation(e.target.value)}
+                        className="location_dropdown"
                     >
                         {locations.map((location) => (
                             <option key={location.value} value={location.value}>{location.label}</option>
@@ -100,26 +104,69 @@ function VPN() {
                     </select>
                 </div>
 
-                <div className="download-section">
+                <div className="download_section">
                     <button 
                         onClick={handleDownloadConfig}
                         disabled={isLoading}
-                        className="download-button"
+                        className="download_button"
                     >
-                        {isLoading ? 'Generating...' : 'Download Configuration'}
+                        {isLoading ? 'Generating...' : 'Download'}
                     </button>
                     {error && <p className="error">{error}</p>}
                 </div>
 
-                <div className="instructions">
-                    <h2>Setup Instructions</h2>
-                    <ol>
-                        <li>Download and install WireGuard client from <a href="https://www.wireguard.com/install/" target="_blank" rel="noopener noreferrer">here</a></li>
-                        <li>Download your configuration file by clicking the button above</li>
-                        <li>Open WireGuard and click "Import tunnel(s) from file"</li>
-                        <li>Select the downloaded configuration file</li>
-                        <li>Click "Activate" to start the VPN tunnel</li>
-                    </ol>
+                <div className="setup_instructions">
+                    <div className="instructions_header" onClick={() => setIsInstructionsOpen(!isInstructionsOpen)}>
+                        <h3>Setup Instructions</h3>
+                        <button className="toggle_button">
+                            {isInstructionsOpen ? '▼' : '▶'}
+                        </button>
+                    </div>
+                    
+                    <div className={`instructions_content ${isInstructionsOpen ? 'open' : ''}`}>
+                        <div className="instruction_step">
+                            <h4>1. Download and Install the WireGuard Client</h4>
+                            <p>Go to the official WireGuard website and download the appropriate client for your operating system:</p>
+                            <a href="https://www.wireguard.com/install/" target="_blank" rel="noopener noreferrer">
+                                https://www.wireguard.com/install/
+                            </a>
+                            <p>Choose your platform:</p>
+                            <ul>
+                                <li><strong>Windows</strong> – WireGuard for Windows</li>
+                                <li><strong>macOS</strong> – WireGuard from the Mac App Store or Homebrew</li>
+                                <li><strong>Linux</strong> – Install via package manager</li>
+                            </ul>
+                        </div>
+
+                        <div className="instruction_step">
+                            <h4>2. Download Your Configuration File</h4>
+                            <p>After installing WireGuard, download your personalized configuration file using the dropdown and button above.
+                            This file will have a <code>.conf</code> extension. Do <strong>not</strong> edit the contents unless instructed.</p>
+                        </div>
+
+                        <div className="instruction_step">
+                            <h4>3. Import the Configuration into WireGuard</h4>
+                            <p>On Desktop (Windows/macOS/Linux):</p>
+                            <ol>
+                                <li>Open the WireGuard application.</li>
+                                <li>Click on <strong>"Add Tunnel"</strong> or <strong>"Import Tunnel(s) from File"</strong>.</li>
+                                <li>Select the configuration file you downloaded.</li>
+                                <li>Once imported, it will appear in your list of tunnels.</li>
+                            </ol>
+                        </div>
+
+                        <div className="instruction_step">
+                            <h4>4. Activate the VPN Tunnel</h4>
+                            <p>Once the configuration is imported:</p>
+                            <ul>
+                                <li>Click or tap the <strong>"Activate"</strong> or <strong>"Toggle"</strong> switch next to the tunnel name.</li>
+                                <li>You should now be connected to the VPN.</li>
+                            </ul>
+                            <p>To verify, you can visit <a href="https://whatismyipaddress.com/" target="_blank" rel="noopener noreferrer">
+                                https://whatismyipaddress.com/
+                            </a> and confirm that your IP address has changed.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

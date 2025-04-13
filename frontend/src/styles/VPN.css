@@ -37,23 +37,6 @@
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-.location-selector {
-    margin-bottom: 30px;
-}
-
-.location-selector h2 {
-    margin-bottom: 15px;
-    color: #333;
-}
-
-.location-selector select {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 16px;
-    background-color: white;
-}
 
 .download-section {
     margin-bottom: 30px;
@@ -162,6 +145,7 @@
 .vpn_content h2 {
     color: #b8b7b7;
     margin-bottom: 2rem;
+    text-align: center;
 }
 
 .vpn_status {
@@ -277,7 +261,7 @@
 
 .download_button {
     background-color: #4cd0a1;
-    color: white;
+    color: #000000;
     border: none;
     border-radius: 8px;
     padding: 0.8rem 1.5rem;
