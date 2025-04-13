@@ -11,7 +11,8 @@ from wireguard import (
     add_peer_to_server,
     get_next_available_ip,
     generate_client_keys,
-    get_server_public_key
+    get_server_public_key,
+    add_peer_to_remote_server
 )
 import hashlib
 import subprocess
@@ -115,8 +116,8 @@ async def generate_wireguard_config(config_request: ConfigRequest, db: Session =
             raise HTTPException(status_code=404, detail="User not found")
             
         # Проверяем поддерживаемые локации
-        if config_request.location not in ["sweden"]:
-            raise HTTPException(status_code=400, detail="Unsupported location")
+        if config_request.location not in SERVER_CONFIGS:
+            raise HTTPException(status_code=400, detail=f"Unsupported location. Available locations: {', '.join(SERVER_CONFIGS.keys())}")
             
         # Проверяем существующую конфигурацию
         existing_config = db.query(ClientConfig).filter(
@@ -138,8 +139,8 @@ async def generate_wireguard_config(config_request: ConfigRequest, db: Session =
         ).all()
         used_ips = [ip[0] for ip in used_ips]
         
-        # Генерируем новый IP-адрес
-        client_ip = get_next_available_ip(used_ips)
+        # Генерируем новый IP-адрес для выбранной локации
+        client_ip = get_next_available_ip(used_ips, config_request.location)
         print(f"Generated IP address: {client_ip}")
         
         # Получаем конфигурацию сервера для выбранной локации
@@ -147,13 +148,17 @@ async def generate_wireguard_config(config_request: ConfigRequest, db: Session =
         server_endpoint = server_config["endpoint"]
         server_public_key = server_config["public_key"]
         
-        # Генерируем ключи клиента (одним вызовом)
+        # Генерируем ключи клиента
         client_private_key, client_public_key = generate_client_keys()
         print(f"Generated client keys. Public key: {client_public_key}")
         
         # Добавляем пир на сервер
         try:
-            add_peer_to_server(client_public_key, client_ip)
+            # Если локация - london, отправляем запрос на лондонский сервер
+            if config_request.location == "london":
+                await add_peer_to_remote_server(client_public_key, client_ip, config_request.location)
+            else:
+                add_peer_to_server(client_public_key, client_ip)
             print(f"Successfully added peer to server")
         except Exception as e:
             print(f"Failed to add peer to server: {str(e)}")
@@ -164,7 +169,8 @@ async def generate_wireguard_config(config_request: ConfigRequest, db: Session =
             private_key=client_private_key,
             client_ip=client_ip,
             server_public_key=server_public_key,
-            server_endpoint=server_endpoint
+            server_endpoint=server_endpoint,
+            location=config_request.location
         )
         print(f"Generated client configuration for IP: {client_ip}")
         

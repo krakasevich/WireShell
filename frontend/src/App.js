@@ -61,9 +61,17 @@ function Header() {
     return (
         <div className="header_container">
           <h2 className='caption'>
-            SecureNet
+            WireShell
             {showProfile && <Profile />}
           </h2>
+        </div>
+    );
+}
+
+function Footer() {
+    return (
+        <div className="footer">
+            Powered by WireShell
         </div>
     );
 }
@@ -78,6 +86,7 @@ function AppContent() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/vpn" element={<VPN />} />
             </Routes>
+            <Footer />
         </div>
     );
 }

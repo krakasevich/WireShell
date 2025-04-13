@@ -6,6 +6,7 @@ from nacl.public import PrivateKey
 from sqlalchemy.orm import Session
 from models import ClientConfig
 import ipaddress
+import requests
 
 def generate_keypair() -> Tuple[str, str]:
     """Генерирует пару ключей WireGuard"""
@@ -35,19 +36,23 @@ def generate_client_ip(db: Session) -> str:
     
     raise Exception("No available IP addresses")
 
-def get_next_available_ip(used_ips: list) -> str:
-    """Получает следующий доступный IP-адрес из подсети 10.0.0.0/24"""
-    network = ipaddress.IPv4Network('10.0.0.0/24')
+def get_next_available_ip(used_ips: list, location: str) -> str:
+    """Получает следующий доступный IP-адрес из подсети выбранного региона"""
+    config = SERVER_CONFIGS.get(location)
+    if not config:
+        raise ValueError(f"Unknown location: {location}")
+    
+    network = ipaddress.IPv4Network(config["subnet"])
     used_ips_set = set(used_ips)
     
-    # Начинаем с 10.0.0.2, так как 10.0.0.1 - адрес сервера
+    # Начинаем с .2, так как .1 - адрес сервера
     for ip in network.hosts():
         ip_str = str(ip)
-        if ip_str == '10.0.0.1':
+        if ip_str == config["server_ip"]:
             continue
         if ip_str not in used_ips_set:
             return ip_str
-    raise Exception("Нет доступных IP-адресов")
+    raise Exception(f"Нет доступных IP-адресов в подсети {config['subnet']}")
 
 def generate_client_keys() -> Tuple[str, str]:
     """Генерирует пару ключей для клиента"""
@@ -151,7 +156,7 @@ def get_server_public_key() -> str:
     except subprocess.CalledProcessError as e:
         raise Exception(f"Failed to get server public key: {e.stderr}")
 
-def generate_client_config(private_key: str, client_ip: str, server_public_key: str, server_endpoint: str) -> str:
+def generate_client_config(private_key: str, client_ip: str, server_public_key: str, server_endpoint: str, location: str) -> str:
     """
     Генерирует конфигурацию клиента WireGuard
     
@@ -160,6 +165,7 @@ def generate_client_config(private_key: str, client_ip: str, server_public_key: 
         client_ip: IP-адрес клиента
         server_public_key: Публичный ключ сервера
         server_endpoint: Endpoint сервера (IP:Port)
+        location: Локация сервера
         
     Returns:
         str: Текст конфигурации WireGuard
@@ -177,11 +183,47 @@ PersistentKeepalive = 25
 """
     return config
 
-# Конфигурация сервера
+# Конфигурация серверов
 SERVER_CONFIGS = {
     "sweden": {
         "public_key": "lagHVCshn3TLoxIANoXHGwdqXGmqE3dAww1A3Uyigxs=",
         "endpoint": "51.21.167.201:51820",
-        "allowed_ips": "0.0.0.0/0",
+        "subnet": "10.0.0.0/24",
+        "server_ip": "10.0.0.1"
+    },
+    "london": {
+        "public_key": "HHFjvE02xOGypOw02VuidiwkUa2e1iXi98OGCQud1QE=", 
+        "endpoint": "18.130.235.215:51820",
+        "subnet": "10.1.0.0/24",
+        "server_ip": "10.1.0.1"
     }
-} 
+}
+
+async def add_peer_to_remote_server(client_public_key: str, client_ip: str, location: str) -> None:
+    """Добавляет пир на удаленный сервер"""
+    try:
+        server_config = SERVER_CONFIGS.get(location)
+        if not server_config:
+            raise ValueError(f"Unknown location: {location}")
+            
+        # Получаем IP и порт из endpoint (формат: IP:PORT)
+        server_ip = server_config["endpoint"].split(":")[0]
+        
+        # Отправляем запрос на удаленный сервер
+        response = requests.post(
+            f"http://{server_ip}:8001/api/add-peer",
+            json={
+                "public_key": client_public_key,
+                "allowed_ip": client_ip
+            },
+            timeout=10
+        )
+        
+        if not response.ok:
+            raise Exception(f"Failed to add peer to remote server: {response.text}")
+            
+        print(f"Successfully added peer to remote server {location}")
+        
+    except Exception as e:
+        print(f"Error adding peer to remote server: {str(e)}")
+        raise 

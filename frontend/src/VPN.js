@@ -6,8 +6,7 @@ const API_URL = "http://51.21.167.201:8000";
 
 const locations = [
     { value: "sweden", label: "Sweden" },
-    { value: "usa", label: "United States" },
-    { value: "germany", label: "Germany" }
+    { value: "london", label: "London" }
 ];
 
 function VPN() {
