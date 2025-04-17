@@ -9,26 +9,24 @@ import ipaddress
 import requests
 
 def generate_keypair() -> Tuple[str, str]:
-    """Генерирует пару ключей WireGuard"""
     try:
-        # Генерируем приватный ключ
+        # Generating a private key
         private = PrivateKey.generate()
         
-        # Конвертируем в формат WireGuard
+        # Convert to WireGuard format
         private_key = base64.b64encode(private.encode()).decode('utf-8')
         public_key = base64.b64encode(private.public_key.encode()).decode('utf-8')
         
         return private_key, public_key
     except Exception as e:
-        raise Exception(f"Ошибка при генерации ключей: {str(e)}")
+        raise Exception(f"Key generation error: {str(e)}")
 
 def generate_client_ip(db: Session) -> str:
-    """Генерирует уникальный IP для нового клиента"""
-    # Получаем все существующие IP
+    # We get all existing IP addresses
     existing_ips = db.query(ClientConfig.assigned_ip).all()
     existing_ips = [ip[0] for ip in existing_ips if ip[0]]
     
-    # Начинаем с 10.0.0.2 (10.0.0.1 зарезервирован для сервера)
+    # Starting with 10.0.0.2 (10.0.0.1 is reserved for the server)
     for i in range(2, 255):
         candidate_ip = f"10.0.0.{i}"
         if candidate_ip not in existing_ips:
@@ -37,7 +35,6 @@ def generate_client_ip(db: Session) -> str:
     raise Exception("No available IP addresses")
 
 def get_next_available_ip(used_ips: list, location: str) -> str:
-    """Получает следующий доступный IP-адрес из подсети выбранного региона"""
     config = SERVER_CONFIGS.get(location)
     if not config:
         raise ValueError(f"Unknown location: {location}")
@@ -45,19 +42,17 @@ def get_next_available_ip(used_ips: list, location: str) -> str:
     network = ipaddress.IPv4Network(config["subnet"])
     used_ips_set = set(used_ips)
     
-    # Начинаем с .2, так как .1 - адрес сервера
     for ip in network.hosts():
         ip_str = str(ip)
         if ip_str == config["server_ip"]:
             continue
         if ip_str not in used_ips_set:
             return ip_str
-    raise Exception(f"Нет доступных IP-адресов в подсети {config['subnet']}")
+    raise Exception(f"There are no available IP addresses in the subnet {config['subnet']}")
 
 def generate_client_keys() -> Tuple[str, str]:
-    """Генерирует пару ключей для клиента"""
     try:
-        # Генерируем приватный ключ
+        # Generating a private key
         private_key = subprocess.run(
             ['wg', 'genkey'],
             capture_output=True,
@@ -65,7 +60,7 @@ def generate_client_keys() -> Tuple[str, str]:
             check=True
         ).stdout.strip()
 
-        # Генерируем публичный ключ из приватного
+        # Generating a public key from a private one
         public_key = subprocess.run(
             ['wg', 'pubkey'],
             input=private_key,
@@ -89,16 +84,15 @@ def generate_client_keys() -> Tuple[str, str]:
         raise
 
 def add_peer_to_server(client_public_key: str, client_ip: str) -> None:
-    """Добавляет пир в конфигурацию сервера"""
     try:
-        # Проверяем существование интерфейса wg0
+        # Check the existence of the wg0 interface
         subprocess.run(
             ['/usr/bin/sudo', '/sbin/ip', 'link', 'show', 'wg0'],
             check=True,
             capture_output=True
         )
         
-        # Проверяем входные данные
+        # Checking the input data
         if not client_public_key:
             raise ValueError("Client public key is required")
         if not client_ip:
@@ -106,7 +100,7 @@ def add_peer_to_server(client_public_key: str, client_ip: str) -> None:
 
         print(f"Adding peer with public key: {client_public_key} and IP: {client_ip}")
         
-        # Добавляем пир
+        # Adding a peer
         cmd = [
             '/usr/bin/sudo', '/usr/bin/wg', 'set', 'wg0',
             'peer', client_public_key,
@@ -115,7 +109,7 @@ def add_peer_to_server(client_public_key: str, client_ip: str) -> None:
         result = subprocess.run(cmd, capture_output=True, text=True, check=True)
         print(f"Add peer command output: {result.stdout}")
         
-        # Проверяем, что пир добавлен
+        # Check that the peer has been added
         check_result = subprocess.run(
             ['/usr/bin/sudo', '/usr/bin/wg', 'show'],
             capture_output=True,
@@ -124,7 +118,7 @@ def add_peer_to_server(client_public_key: str, client_ip: str) -> None:
         )
         print(f"Current WireGuard configuration:\n{check_result.stdout}")
         
-        # Сохраняем конфигурацию
+        # Saving the configuration
         save_result = subprocess.run(
             ['/usr/bin/sudo', '/usr/bin/wg-quick', 'save', 'wg0'],
             capture_output=True,
@@ -144,7 +138,6 @@ def add_peer_to_server(client_public_key: str, client_ip: str) -> None:
         raise
 
 def get_server_public_key() -> str:
-    """Получает публичный ключ сервера из активной конфигурации"""
     try:
         result = subprocess.run(
             ['sudo', 'wg', 'show', 'wg0', 'public-key'],
@@ -157,19 +150,6 @@ def get_server_public_key() -> str:
         raise Exception(f"Failed to get server public key: {e.stderr}")
 
 def generate_client_config(private_key: str, client_ip: str, server_public_key: str, server_endpoint: str, location: str) -> str:
-    """
-    Генерирует конфигурацию клиента WireGuard
-    
-    Args:
-        private_key: Приватный ключ клиента
-        client_ip: IP-адрес клиента
-        server_public_key: Публичный ключ сервера
-        server_endpoint: Endpoint сервера (IP:Port)
-        location: Локация сервера
-        
-    Returns:
-        str: Текст конфигурации WireGuard
-    """
     config = f"""[Interface]
 PrivateKey = {private_key}
 Address = {client_ip}/32
@@ -183,7 +163,7 @@ PersistentKeepalive = 25
 """
     return config
 
-# Конфигурация серверов
+# Server configuration
 SERVER_CONFIGS = {
     "sweden": {
         "public_key": "lagHVCshn3TLoxIANoXHGwdqXGmqE3dAww1A3Uyigxs=",
@@ -200,16 +180,15 @@ SERVER_CONFIGS = {
 }
 
 async def add_peer_to_remote_server(client_public_key: str, client_ip: str, location: str) -> None:
-    """Добавляет пир на удаленный сервер"""
     try:
         server_config = SERVER_CONFIGS.get(location)
         if not server_config:
             raise ValueError(f"Unknown location: {location}")
             
-        # Получаем IP и порт из endpoint (формат: IP:PORT)
+        # Get the IP and port from endpoint (format: IP:PORT)
         server_ip = server_config["endpoint"].split(":")[0]
         
-        # Отправляем запрос на удаленный сервер
+        # Sending a request to a remote server
         response = requests.post(
             f"http://{server_ip}:8001/api/add-peer",
             json={

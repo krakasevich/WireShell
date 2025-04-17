@@ -23,10 +23,10 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-# Обновляем настройки CORS
+# Updating CORS settings
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Разрешаем все источники
+    allow_origins=["*"], 
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -39,7 +39,7 @@ class UserCreate(BaseModel):
 
 class ConfigRequest(BaseModel):
     user_id: int
-    location: str  # Добавляем поле для локации
+    location: str 
 
 # Dependency for getting a database session
 def get_db():
@@ -91,7 +91,7 @@ async def login(request: UserCreate, db: Session = Depends(get_db)):
             print(f"User not found: {request.username}")
             raise HTTPException(status_code=401, detail="Invalid username or password")
         
-        # Хешируем введенный пароль и сравниваем с хешем в базе
+        # We hash the entered password and compare it with the hash in the database
         hashed_password = hashlib.sha256(request.password.encode()).hexdigest()
         if user.password != hashed_password:
             print(f"Invalid password for user: {request.username}")
@@ -106,20 +106,19 @@ async def login(request: UserCreate, db: Session = Depends(get_db)):
 
 @app.post("/api/generate-config")
 async def generate_wireguard_config(config_request: ConfigRequest, db: Session = Depends(get_db)):
-    """Генерирует конфигурацию WireGuard для пользователя"""
     try:
         print(f"Generating keys for user {config_request.user_id} in location {config_request.location}")
         
-        # Проверяем существование пользователя
+        # Checking the user's existence
         user = db.query(User).filter(User.id == config_request.user_id).first()
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
             
-        # Проверяем поддерживаемые локации
+        # Checking supported locations
         if config_request.location not in SERVER_CONFIGS:
             raise HTTPException(status_code=400, detail=f"Unsupported location. Available locations: {', '.join(SERVER_CONFIGS.keys())}")
             
-        # Проверяем существующую конфигурацию
+        # Checking the existing configuration
         existing_config = db.query(ClientConfig).filter(
             and_(
                 ClientConfig.user_id == config_request.user_id,
@@ -133,28 +132,27 @@ async def generate_wireguard_config(config_request: ConfigRequest, db: Session =
                 "filename": f"wireguard-{config_request.location}-{config_request.user_id}.conf"
             }
             
-        # Получаем список использованных IP-адресов для данной локации
+        # We get a list of used IP addresses for this location
         used_ips = db.query(ClientConfig.assigned_ip).filter(
             ClientConfig.location == config_request.location
         ).all()
         used_ips = [ip[0] for ip in used_ips]
         
-        # Генерируем новый IP-адрес для выбранной локации
+        # Generating a new IP address for the selected location
         client_ip = get_next_available_ip(used_ips, config_request.location)
         print(f"Generated IP address: {client_ip}")
         
-        # Получаем конфигурацию сервера для выбранной локации
+        # Getting the server configuration for the selected location
         server_config = SERVER_CONFIGS[config_request.location]
         server_endpoint = server_config["endpoint"]
         server_public_key = server_config["public_key"]
         
-        # Генерируем ключи клиента
+        # Generating the client's keys
         client_private_key, client_public_key = generate_client_keys()
         print(f"Generated client keys. Public key: {client_public_key}")
         
-        # Добавляем пир на сервер
+        # Adding a peer to the server
         try:
-            # Если локация - london, отправляем запрос на лондонский сервер
             if config_request.location == "london":
                 await add_peer_to_remote_server(client_public_key, client_ip, config_request.location)
             else:
@@ -164,7 +162,7 @@ async def generate_wireguard_config(config_request: ConfigRequest, db: Session =
             print(f"Failed to add peer to server: {str(e)}")
             raise HTTPException(status_code=500, detail=f"Failed to add peer to server: {str(e)}")
             
-        # Генерируем конфигурацию клиента
+        # Generating the client configuration
         config = generate_client_config(
             private_key=client_private_key,
             client_ip=client_ip,
@@ -174,7 +172,7 @@ async def generate_wireguard_config(config_request: ConfigRequest, db: Session =
         )
         print(f"Generated client configuration for IP: {client_ip}")
         
-        # Сохраняем конфигурацию в базу данных
+        # Saving the configuration to the database
         client_config = ClientConfig(
             user_id=config_request.user_id,
             location=config_request.location,

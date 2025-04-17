@@ -68,26 +68,19 @@ function Header() {
     );
 }
 
-function Footer() {
-    return (
-        <div className="footer">
-            Powered by WireShell
-        </div>
-    );
-}
-
 function AppContent() {
     return (
-        <div>
+        <>
             <Header />
-            <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/registration" element={<RegisterPage />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/vpn" element={<VPN />} />
-            </Routes>
-            <Footer />
-        </div>
+            <main>
+                <Routes>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/registration" element={<RegisterPage />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/vpn" element={<VPN />} />
+                </Routes>
+            </main>
+        </>
     );
 }
 

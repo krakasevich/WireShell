@@ -78,7 +78,7 @@ function Login() {
             </form>
 
             <div className="auth_switch">
-                <p>Don't have an account?? <button className="register" onClick={handleRegister}>Register</button></p>
+                <p>Don't have an account? <button className="register" onClick={handleRegister}>Register</button></p>
             </div>
         </div>
     );

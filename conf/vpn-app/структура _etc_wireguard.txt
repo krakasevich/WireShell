@@ -1,7 +1,0 @@
-/etc/wireguard
-|
-|-server_private.key
-|-server_public.key
-|-wg0.conf
-
-
